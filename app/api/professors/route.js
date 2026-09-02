@@ -22,20 +22,13 @@ export async function POST(request) {
       
       const { data: uploadData, error: uploadError } = await db.storage
         .from('professor_assets')
-        .upload(fileName, photo, {
-          cacheControl: '3600',
-          upsert: false
-        });
+        .upload(fileName, photo);
         
       if (uploadError) {
         throw uploadError;
       }
       
-      const { data: publicUrlData } = db.storage
-        .from('professor_assets')
-        .getPublicUrl(uploadData.path);
-        
-      photoUrl = publicUrlData.publicUrl;
+      photoUrl = uploadData.url;
     }
 
     const { data: insertData, error: insertError } = await db.database
@@ -57,6 +50,6 @@ export async function POST(request) {
     return NextResponse.json({ success: true, id: insertData.id }, { status: 201 });
   } catch (error) {
     console.error('Error creating professor:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json({ error: error.message || String(error) }, { status: 500 });
   }
 }
