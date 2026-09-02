@@ -36,9 +36,9 @@ export async function POST(request) {
       .insert([{
         name,
         bio: bio || null,
-        photoUrl,
-        linkedinUrl: linkedinUrl || null,
-        whatsappNumber: whatsappNumber || null
+        photourl: photoUrl,
+        linkedinurl: linkedinUrl || null,
+        whatsappnumber: whatsappNumber || null
       }])
       .select('id')
       .single();

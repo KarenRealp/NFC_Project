@@ -7,7 +7,7 @@ export default async function AdminDashboard() {
   const { data, error } = await db.database
     .from('professors')
     .select('*')
-    .order('createdAt', { ascending: false });
+    .order('createdat', { ascending: false });
 
   const professors = data || [];
 
@@ -33,8 +33,8 @@ export default async function AdminDashboard() {
                 border: '1px solid var(--glass-border)'
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
-                  {prof.photoUrl ? (
-                    <img src={prof.photoUrl} alt={prof.name} style={{ width: '60px', height: '60px', borderRadius: '50%', objectFit: 'cover' }} />
+                  {prof.photourl ? (
+                    <img src={prof.photourl} alt={prof.name} style={{ width: '60px', height: '60px', borderRadius: '50%', objectFit: 'cover' }} />
                   ) : (
                     <div style={{ width: '60px', height: '60px', borderRadius: '50%', backgroundColor: 'var(--accent-purple)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', fontWeight: 'bold' }}>
                       {prof.name.charAt(0)}

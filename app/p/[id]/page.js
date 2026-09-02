@@ -16,8 +16,8 @@ export default async function PublicProfile({ params }) {
     notFound();
   }
 
-  const waLink = professor.whatsappNumber 
-    ? `https://wa.me/${professor.whatsappNumber.replace(/[^0-9]/g, '')}` 
+  const waLink = professor.whatsappnumber 
+    ? `https://wa.me/${professor.whatsappnumber.replace(/[^0-9]/g, '')}` 
     : null;
 
   return (
@@ -34,9 +34,9 @@ export default async function PublicProfile({ params }) {
         textAlign: 'center',
         padding: '3rem 2rem'
       }}>
-        {professor.photoUrl ? (
+        {professor.photourl ? (
           <img 
-            src={professor.photoUrl} 
+            src={professor.photourl} 
             alt={professor.name} 
             style={{ 
               width: '120px', 
@@ -80,8 +80,8 @@ export default async function PublicProfile({ params }) {
             </a>
           )}
           
-          {professor.linkedinUrl && (
-            <a href={professor.linkedinUrl} target="_blank" rel="noreferrer" className="btn-primary" style={{ background: '#0077b5' }}>
+          {professor.linkedinurl && (
+            <a href={professor.linkedinurl} target="_blank" rel="noreferrer" className="btn-primary" style={{ background: '#0077b5' }}>
               Ver perfil en LinkedIn
             </a>
           )}
