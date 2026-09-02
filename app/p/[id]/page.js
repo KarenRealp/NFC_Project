@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import db from '@/lib/db';
+import { db } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
