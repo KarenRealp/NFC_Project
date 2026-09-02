@@ -1,8 +1,5 @@
 import { NextResponse } from 'next/server';
 import db from '@/lib/db';
-import fs from 'fs/promises';
-import path from 'path';
-import crypto from 'crypto';
 
 export async function POST(request) {
   try {
@@ -18,38 +15,46 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Name is required' }, { status: 400 });
     }
 
-    const id = crypto.randomBytes(4).toString('hex');
     let photoUrl = null;
 
     if (photo && photo.size > 0) {
-      const bytes = await photo.arrayBuffer();
-      const buffer = Buffer.from(bytes);
+      const fileName = `${Date.now()}-${photo.name.replace(/\s+/g, '-')}`;
       
-      const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-      await fs.mkdir(uploadDir, { recursive: true });
+      const { data: uploadData, error: uploadError } = await db.storage
+        .from('professor_assets')
+        .upload(fileName, photo, {
+          cacheControl: '3600',
+          upsert: false
+        });
+        
+      if (uploadError) {
+        throw uploadError;
+      }
       
-      const fileName = `${id}-${photo.name.replace(/\s+/g, '-')}`;
-      const filePath = path.join(uploadDir, fileName);
-      
-      await fs.writeFile(filePath, buffer);
-      photoUrl = `/uploads/${fileName}`;
+      const { data: publicUrlData } = db.storage
+        .from('professor_assets')
+        .getPublicUrl(uploadData.path);
+        
+      photoUrl = publicUrlData.publicUrl;
     }
 
-    const insert = db.prepare(`
-      INSERT INTO professors (id, name, bio, photoUrl, linkedinUrl, whatsappNumber)
-      VALUES (@id, @name, @bio, @photoUrl, @linkedinUrl, @whatsappNumber)
-    `);
+    const { data: insertData, error: insertError } = await db
+      .from('professors')
+      .insert([{
+        name,
+        bio: bio || null,
+        photoUrl,
+        linkedinUrl: linkedinUrl || null,
+        whatsappNumber: whatsappNumber || null
+      }])
+      .select('id')
+      .single();
 
-    insert.run({
-      id,
-      name,
-      bio: bio || null,
-      photoUrl,
-      linkedinUrl: linkedinUrl || null,
-      whatsappNumber: whatsappNumber || null
-    });
+    if (insertError) {
+      throw insertError;
+    }
 
-    return NextResponse.json({ success: true, id }, { status: 201 });
+    return NextResponse.json({ success: true, id: insertData.id }, { status: 201 });
   } catch (error) {
     console.error('Error creating professor:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

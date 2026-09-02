@@ -1,8 +1,13 @@
 import Link from 'next/link';
 import db from '@/lib/db';
 
-export default function AdminDashboard() {
-  const professors = db.prepare('SELECT * FROM professors ORDER BY createdAt DESC').all();
+export default async function AdminDashboard() {
+  const { data, error } = await db
+    .from('professors')
+    .select('*')
+    .order('createdAt', { ascending: false });
+
+  const professors = data || [];
 
   return (
     <div className="container">

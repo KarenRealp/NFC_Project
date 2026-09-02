@@ -4,9 +4,13 @@ import db from '@/lib/db';
 export default async function PublicProfile({ params }) {
   const { id } = await params;
   
-  const professor = db.prepare('SELECT * FROM professors WHERE id = ?').get(id);
+  const { data: professor, error } = await db
+    .from('professors')
+    .select('*')
+    .eq('id', id)
+    .single();
 
-  if (!professor) {
+  if (error || !professor) {
     notFound();
   }
 
