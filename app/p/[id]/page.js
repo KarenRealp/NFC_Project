@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 export default async function PublicProfile({ params }) {
   const { id } = await params;
   
-  const { data: professor, error } = await db
+  const { data: professor, error } = await db.database
     .from('professors')
     .select('*')
     .eq('id', id)

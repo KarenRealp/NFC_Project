@@ -4,7 +4,7 @@ import { db } from '@/lib/db';
 export const dynamic = 'force-dynamic';
 
 export default async function AdminDashboard() {
-  const { data, error } = await db
+  const { data, error } = await db.database
     .from('professors')
     .select('*')
     .order('createdAt', { ascending: false });

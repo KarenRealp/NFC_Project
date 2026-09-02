@@ -38,7 +38,7 @@ export async function POST(request) {
       photoUrl = publicUrlData.publicUrl;
     }
 
-    const { data: insertData, error: insertError } = await db
+    const { data: insertData, error: insertError } = await db.database
       .from('professors')
       .insert([{
         name,
